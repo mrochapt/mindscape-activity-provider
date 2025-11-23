@@ -1,0 +1,8 @@
+{
+  "name": "MindScape Creative Reasoning Activity",
+  "config_url": "https://<teu-dominio>/config",
+  "json_params_url": "https://<teu-dominio>/config/params",
+  "user_url": "https://<teu-dominio>/deploy",
+  "analytics_url": "https://<teu-dominio>/analytics",
+  "analytics_list_url": "https://<teu-dominio>/analytics/list"
+}

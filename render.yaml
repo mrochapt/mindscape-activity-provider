@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: mindscape-activity-provider
+    env: docker
+    plan: free
+    autoDeploy: true
+    dockerfilePath: ./Dockerfile
