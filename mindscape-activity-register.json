@@ -1,0 +1,8 @@
+{
+  "name": "MindScape Creative Reasoning Activity",
+  "config_url": "https://mindscape-activity-provider.onrender.com/configuracao-mindscape.html",
+  "json_params_url": "https://mindscape-activity-provider.onrender.com/json-params-mindscape",
+  "user_url": "https://mindscape-activity-provider.onrender.com/deploy-mindscape",
+  "analytics_url": "https://mindscape-activity-provider.onrender.com/analytics-mindscape",
+  "analytics_list_url": "https://mindscape-activity-provider.onrender.com/lista-analytics-mindscape"
+}

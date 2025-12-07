@@ -1,6 +1,6 @@
 package com.mindscape.activityprovider.controller;
 
-import com.mindscape.activityprovider.dto.AnalyticItem;
+import com.mindscape.activityprovider.analytics.AnalyticsService;
 import com.mindscape.activityprovider.dto.AnalyticsResponseItem;
 import com.mindscape.activityprovider.model.StudentAnalytics;
 import org.springframework.http.MediaType;
@@ -10,15 +10,15 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 public class MindscapeController {
 
-    // activityId -> (studentId -> analytics)
-    private final Map<String, Map<String, StudentAnalytics>> analyticsStore = new ConcurrentHashMap<>();
+    private final AnalyticsService analyticsService;
 
-    // --------- Endpoints básicos / healthcheck ---------
+    public MindscapeController(AnalyticsService analyticsService) {
+        this.analyticsService = analyticsService;
+    }
 
     @GetMapping("/")
     public String home() {
@@ -27,7 +27,6 @@ public class MindscapeController {
 
     // --------- 1) Página de configuração (config_url) ---------
 
-    // Ex: https://.../configuracao-mindscape.html
     @GetMapping(value = "/configuracao-mindscape.html", produces = MediaType.TEXT_HTML_VALUE)
     public String configPage() {
         // Campos "prompt" e "maxIdeas" são referidos em json_params_url
@@ -56,7 +55,6 @@ public class MindscapeController {
 
     // --------- 2) Lista de parâmetros de configuração (json_params_url) ---------
 
-    // Ex: https://.../json-params-mindscape
     @GetMapping("/json-params-mindscape")
     public List<Map<String, String>> jsonParams() {
         List<Map<String, String>> params = new ArrayList<>();
@@ -75,11 +73,6 @@ public class MindscapeController {
     }
 
     // --------- 3) Deploy da atividade (user_url) ---------
-    //
-    // A Inven!RA chama user_url com o ID da instância para obter um URL base.
-    // Por simplicidade:
-    // - Recebemos opcionalmente {"activityID": "..."}
-    // - Devolvemos uma path relativa que será usada como endpoint para o POST seguinte.
 
     public static class DeployRequest {
         public String activityID;
@@ -99,12 +92,9 @@ public class MindscapeController {
                 ? req.activityID
                 : UUID.randomUUID().toString();
 
-        // Garante que temos um mapa para esta atividade
-        analyticsStore.computeIfAbsent(activityId, k -> new ConcurrentHashMap<>());
+        // Agora delega no serviço (em vez de mexer no Map diretamente)
+        analyticsService.ensureActivityExists(activityId);
 
-        // Devolvemos um URL onde a Inven!RA vai fazer POST com config + Inven!RAstdID:
-        // Inven!RA irá depois fazer POST a este URL com:
-        // { "activityID": "...", "Inven!RAstdID": "...", "json_params": {...} }
         String path = "/mindscape/start?activityID=" + urlEncode(activityId);
         return path;
     }
@@ -137,11 +127,8 @@ public class MindscapeController {
             throw new IllegalArgumentException("activityID e Inven!RAstdID são obrigatórios");
         }
 
-        Map<String, StudentAnalytics> perActivity =
-                analyticsStore.computeIfAbsent(activityId, k -> new ConcurrentHashMap<>());
-
-        StudentAnalytics sa = perActivity.computeIfAbsent(studentId,
-                sid -> new StudentAnalytics(activityId, sid));
+        // Em vez de mexer no Map: pede ao serviço o StudentAnalytics
+        StudentAnalytics sa = analyticsService.getOrCreateStudentAnalytics(activityId, studentId);
 
         // Guardar parâmetros de configuração recebidos
         if (req.json_params != null) {
@@ -159,7 +146,6 @@ public class MindscapeController {
             }
         }
 
-        // Devolver URL onde o estudante irá realmente interagir (HTML)
         String url = "/mindscape/run?activityID=" + urlEncode(activityId)
                 + "&studentID=" + urlEncode(studentId);
         return url;
@@ -171,11 +157,8 @@ public class MindscapeController {
     public String runPage(@RequestParam("activityID") String activityId,
                           @RequestParam("studentID") String studentId) {
 
-        Map<String, StudentAnalytics> perActivity =
-                analyticsStore.computeIfAbsent(activityId, k -> new ConcurrentHashMap<>());
-
-        StudentAnalytics sa = perActivity.computeIfAbsent(studentId,
-                sid -> new StudentAnalytics(activityId, sid));
+        StudentAnalytics sa =
+                analyticsService.getOrCreateStudentAnalytics(activityId, studentId);
 
         sa.touch();
 
@@ -239,15 +222,11 @@ public class MindscapeController {
                                        @RequestParam(name = "ideasText", required = false) String ideasText,
                                        @RequestParam(name = "reflection", required = false) String reflection) {
 
-        Map<String, StudentAnalytics> perActivity =
-                analyticsStore.computeIfAbsent(activityId, k -> new ConcurrentHashMap<>());
-
-        StudentAnalytics sa = perActivity.computeIfAbsent(studentId,
-                sid -> new StudentAnalytics(activityId, sid));
+        StudentAnalytics sa =
+                analyticsService.getOrCreateStudentAnalytics(activityId, studentId);
 
         if (ideasText != null && !ideasText.isBlank()) {
             sa.appendIdeasText(ideasText);
-            // contar linhas não vazias como número de ideias adicionadas
             int newIdeas = (int) Arrays.stream(ideasText.split("\\R"))
                     .filter(l -> !l.isBlank())
                     .count();
@@ -259,7 +238,6 @@ public class MindscapeController {
             sa.setReflectionSubmitted(true);
         }
 
-        // Redireciona de volta para a página de execução (poderias criar página de "obrigado")
         String redirectUrl = "/mindscape/run?activityID=" + urlEncode(activityId)
                 + "&studentID=" + urlEncode(studentId);
         return new RedirectView(redirectUrl);
@@ -309,27 +287,8 @@ public class MindscapeController {
             throw new IllegalArgumentException("activityID é obrigatório");
         }
 
-        Map<String, StudentAnalytics> perActivity = analyticsStore.getOrDefault(activityId, Map.of());
-        List<AnalyticsResponseItem> response = new ArrayList<>();
-
-        for (StudentAnalytics sa : perActivity.values()) {
-            List<AnalyticItem> quant = new ArrayList<>();
-            List<AnalyticItem> qual = new ArrayList<>();
-
-            quant.add(new AnalyticItem("Ideas generated", "integer", sa.getIdeasGenerated()));
-            quant.add(new AnalyticItem("Time spent (seconds)", "integer", sa.getTimeSpentSeconds()));
-            quant.add(new AnalyticItem("Reflection submitted", "boolean", sa.isReflectionSubmitted()));
-
-            qual.add(new AnalyticItem("Prompt used", "text/plain", sa.getPrompt()));
-            qual.add(new AnalyticItem("Ideas text", "text/plain", sa.getIdeasText()));
-
-            AnalyticsResponseItem item =
-                    new AnalyticsResponseItem(sa.getStudentId(), quant, qual);
-
-            response.add(item);
-        }
-
-        return response;
+        // Agora a lógica vive no serviço e usa o Factory Method por baixo
+        return analyticsService.getAnalyticsForActivity(activityId);
     }
 
     // --------- Helpers ---------

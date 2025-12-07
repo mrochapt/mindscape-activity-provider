@@ -1,0 +1,11 @@
+com\mindscape\activityprovider\dto\AnalyticItem.class
+com\mindscape\activityprovider\controller\MindscapeController.class
+com\mindscape\activityprovider\model\StudentAnalytics.class
+com\mindscape\controller\ConfigController.class
+com\mindscape\controller\DeployController.class
+com\mindscape\controller\AnalyticsController.class
+com\mindscape\activityprovider\controller\MindscapeController$DeployRequest.class
+com\mindscape\activityprovider\controller\MindscapeController$StartRequest.class
+com\mindscape\activityprovider\dto\AnalyticsResponseItem.class
+com\mindscape\MindScapeApplication.class
+com\mindscape\activityprovider\controller\MindscapeController$AnalyticsRequest.class
