@@ -1,6 +1,7 @@
 package com.mindscape.activityprovider.controller;
 
 import com.mindscape.activityprovider.analytics.AnalyticsService;
+import com.mindscape.activityprovider.dto.AnalyticItem;
 import com.mindscape.activityprovider.dto.AnalyticsResponseItem;
 import com.mindscape.activityprovider.model.StudentAnalytics;
 import org.springframework.http.MediaType;
@@ -29,7 +30,6 @@ public class MindscapeController {
 
     @GetMapping(value = "/configuracao-mindscape.html", produces = MediaType.TEXT_HTML_VALUE)
     public String configPage() {
-        // Campos "prompt" e "maxIdeas" são referidos em json_params_url
         return """
                 <!DOCTYPE html>
                 <html lang="pt">
@@ -92,7 +92,7 @@ public class MindscapeController {
                 ? req.activityID
                 : UUID.randomUUID().toString();
 
-        // Agora delega no serviço (em vez de mexer no Map diretamente)
+        // Garante que temos um mapa para esta atividade (via serviço)
         analyticsService.ensureActivityExists(activityId);
 
         String path = "/mindscape/start?activityID=" + urlEncode(activityId);
@@ -107,8 +107,8 @@ public class MindscapeController {
 
     public static class StartRequest {
         public String activityID;
-        public String InvenRAstdID;  // pode vir com este nome ou com "Inven!RAstdID"
-        public String InvenRAStdID;  // fallback
+        public String InvenRAstdID;
+        public String InvenRAStdID;
         public Map<String, Object> json_params;
 
         public String getEffectiveStudentId() {
@@ -127,10 +127,9 @@ public class MindscapeController {
             throw new IllegalArgumentException("activityID e Inven!RAstdID são obrigatórios");
         }
 
-        // Em vez de mexer no Map: pede ao serviço o StudentAnalytics
-        StudentAnalytics sa = analyticsService.getOrCreateStudentAnalytics(activityId, studentId);
+        StudentAnalytics sa =
+                analyticsService.getOrCreateStudentAnalytics(activityId, studentId);
 
-        // Guardar parâmetros de configuração recebidos
         if (req.json_params != null) {
             Object promptObj = req.json_params.get("prompt");
             if (promptObj != null) {
@@ -216,6 +215,7 @@ public class MindscapeController {
     }
 
     // Submissão das ideias/reflexão (atualiza analytics)
+
     @PostMapping(value = "/mindscape/submit", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public RedirectView submitActivity(@RequestParam("activityID") String activityId,
                                        @RequestParam("studentID") String studentId,
@@ -287,7 +287,6 @@ public class MindscapeController {
             throw new IllegalArgumentException("activityID é obrigatório");
         }
 
-        // Agora a lógica vive no serviço e usa o Factory Method por baixo
         return analyticsService.getAnalyticsForActivity(activityId);
     }
 
