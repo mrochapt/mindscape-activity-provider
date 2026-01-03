@@ -1,15 +1,15 @@
 package com.mindscape.controller;
 
 import org.springframework.web.bind.annotation.*;
+
 import java.util.*;
 
 @RestController
-@RequestMapping("/analytics")
+@RequestMapping("/mock-analytics")
 public class AnalyticsController {
 
     @GetMapping("/list")
-    public Map<String, List<Map<String, String>>> listAnalytics() {
-
+    public Map<String, List<Map<String, Object>>> listAnalytics() {
         return Map.of(
             "qualAnalytics", List.of(
                 Map.of("name", "CreativeOutput", "type", "text/plain")
@@ -22,8 +22,7 @@ public class AnalyticsController {
     }
 
     @PostMapping
-    public List<Map<String, Object>> getAnalytics(@RequestBody Map<String, String> payload) {
-
+    public List<Map<String, Object>> getAnalytics(@RequestBody Map<String, Object> payload) {
         return List.of(
             Map.of(
                 "inveniraStdID", "1001",
