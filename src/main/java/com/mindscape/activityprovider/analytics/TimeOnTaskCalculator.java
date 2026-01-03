@@ -14,14 +14,11 @@ public class TimeOnTaskCalculator implements AnalyticsCalculator {
     public AnalyticItem calculate(String activityId,
                                   String studentId,
                                   StudentAnalytics studentAnalytics) {
-
-        double minutes = studentAnalytics.getTotalTimeMinutes();
-
+        double minutes = studentAnalytics.getTimeSpentSeconds() / 60.0;
         AnalyticItem item = new AnalyticItem();
-        item.setId("timeOnTask");
-        item.setLabel("Tempo em tarefa (min)");
-        item.setValue(minutes);
+        item.setName("TimeOnTaskMinutes");
         item.setType("quantitative");
+        item.setValue(minutes);
         return item;
     }
 }

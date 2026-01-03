@@ -6,11 +6,18 @@ import com.mindscape.activityprovider.model.StudentAnalytics;
 public class IdeasGeneratedCalculator implements AnalyticsCalculator {
 
     @Override
-    public AnalyticItem calculate(StudentAnalytics sa) {
+    public String getType() {
+        return "ideasGenerated";
+    }
+
+    @Override
+    public AnalyticItem calculate(String activityId,
+                                  String studentId,
+                                  StudentAnalytics sa) {
         return new AnalyticItem(
-                "Ideas generated",
-                "integer",
-                sa.getIdeasGenerated()
+            "Ideas generated",   // nome da métrica
+            "integer",           // tipo
+            sa.getIdeasGenerated()
         );
     }
 }

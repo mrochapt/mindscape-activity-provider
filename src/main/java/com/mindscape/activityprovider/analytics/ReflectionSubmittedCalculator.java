@@ -6,11 +6,18 @@ import com.mindscape.activityprovider.model.StudentAnalytics;
 public class ReflectionSubmittedCalculator implements AnalyticsCalculator {
 
     @Override
-    public AnalyticItem calculate(StudentAnalytics sa) {
+    public String getType() {
+        return "reflectionSubmitted";
+    }
+
+    @Override
+    public AnalyticItem calculate(String activityId,
+                                  String studentId,
+                                  StudentAnalytics sa) {
         return new AnalyticItem(
-                "Reflection submitted",
-                "boolean",
-                sa.isReflectionSubmitted()
+            "Reflection submitted",
+            "boolean",
+            sa.isReflectionSubmitted()
         );
     }
 }

@@ -6,11 +6,18 @@ import com.mindscape.activityprovider.model.StudentAnalytics;
 public class TimeSpentCalculator implements AnalyticsCalculator {
 
     @Override
-    public AnalyticItem calculate(StudentAnalytics sa) {
+    public String getType() {
+        return "timeSpent";
+    }
+
+    @Override
+    public AnalyticItem calculate(String activityId,
+                                  String studentId,
+                                  StudentAnalytics sa) {
         return new AnalyticItem(
-                "Time spent (seconds)",
-                "integer",
-                sa.getTimeSpentSeconds()
+            "TimeSpentSeconds",
+            "integer",
+            sa.getTimeSpentSeconds()
         );
     }
 }

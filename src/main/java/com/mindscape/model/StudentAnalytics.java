@@ -25,64 +25,35 @@ public class StudentAnalytics {
         this.lastInteractionTimestamp = this.firstAccessTimestamp;
     }
 
-    public String getActivityId() {
-        return activityId;
-    }
+    public String getActivityId() { return activityId; }
+    public String getStudentId() { return studentId; }
 
-    public String getStudentId() {
-        return studentId;
-    }
+    public String getPrompt() { return prompt; }
+    public void setPrompt(String prompt) { this.prompt = prompt; }
 
-    public String getPrompt() {
-        return prompt;
-    }
+    public Integer getMaxIdeas() { return maxIdeas; }
+    public void setMaxIdeas(Integer maxIdeas) { this.maxIdeas = maxIdeas; }
 
-    public void setPrompt(String prompt) {
-        this.prompt = prompt;
-    }
-
-    public Integer getMaxIdeas() {
-        return maxIdeas;
-    }
-
-    public void setMaxIdeas(Integer maxIdeas) {
-        this.maxIdeas = maxIdeas;
-    }
-
-    public int getIdeasGenerated() {
-        return ideasGenerated;
-    }
-
+    public int getIdeasGenerated() { return ideasGenerated; }
     public void incrementIdeasGenerated(int amount) {
         this.ideasGenerated += amount;
         this.lastInteractionTimestamp = System.currentTimeMillis();
     }
 
-    public long getFirstAccessTimestamp() {
-        return firstAccessTimestamp;
-    }
-
-    public long getLastInteractionTimestamp() {
-        return lastInteractionTimestamp;
-    }
+    public long getFirstAccessTimestamp() { return firstAccessTimestamp; }
+    public long getLastInteractionTimestamp() { return lastInteractionTimestamp; }
 
     public void touch() {
         this.lastInteractionTimestamp = System.currentTimeMillis();
     }
 
-    public boolean isReflectionSubmitted() {
-        return reflectionSubmitted;
-    }
-
+    public boolean isReflectionSubmitted() { return reflectionSubmitted; }
     public void setReflectionSubmitted(boolean reflectionSubmitted) {
         this.reflectionSubmitted = reflectionSubmitted;
         this.lastInteractionTimestamp = System.currentTimeMillis();
     }
 
-    public String getIdeasText() {
-        return ideasText;
-    }
-
+    public String getIdeasText() { return ideasText; }
     public void appendIdeasText(String text) {
         if (text == null || text.isBlank()) return;
         if (this.ideasText == null || this.ideasText.isBlank()) {

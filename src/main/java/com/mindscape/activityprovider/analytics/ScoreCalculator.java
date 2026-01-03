@@ -15,14 +15,17 @@ public class ScoreCalculator implements AnalyticsCalculator {
                                   String studentId,
                                   StudentAnalytics studentAnalytics) {
 
-       
-        double score = studentAnalytics.getScore();
+        // Exemplo de heurística: ideias + bónus se houver reflexão
+        int base = studentAnalytics.getIdeasGenerated();
+        if (studentAnalytics.isReflectionSubmitted()) {
+            base += 5;
+        }
 
         AnalyticItem item = new AnalyticItem();
-        item.setId("score");
-        item.setLabel("Pontuação final");
-        item.setValue(score);
-        item.setType("quantitative");
+        item.setName("Score");
+        item.setType("integer");
+        item.setValue(base);
+
         return item;
     }
 }
