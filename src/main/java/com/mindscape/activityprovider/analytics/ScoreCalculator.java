@@ -2,7 +2,9 @@ package com.mindscape.activityprovider.analytics;
 
 import com.mindscape.activityprovider.dto.AnalyticItem;
 import com.mindscape.activityprovider.model.StudentAnalytics;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ScoreCalculator implements AnalyticsCalculator {
 
     @Override
@@ -14,8 +16,6 @@ public class ScoreCalculator implements AnalyticsCalculator {
     public AnalyticItem calculate(String activityId,
                                   String studentId,
                                   StudentAnalytics studentAnalytics) {
-
-        // Exemplo de heurística: ideias + bónus se houver reflexão
         int base = studentAnalytics.getIdeasGenerated();
         if (studentAnalytics.isReflectionSubmitted()) {
             base += 5;
@@ -29,3 +29,4 @@ public class ScoreCalculator implements AnalyticsCalculator {
         return item;
     }
 }
+

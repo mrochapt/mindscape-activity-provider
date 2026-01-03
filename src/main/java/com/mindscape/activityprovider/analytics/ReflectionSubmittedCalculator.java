@@ -2,7 +2,9 @@ package com.mindscape.activityprovider.analytics;
 
 import com.mindscape.activityprovider.dto.AnalyticItem;
 import com.mindscape.activityprovider.model.StudentAnalytics;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ReflectionSubmittedCalculator implements AnalyticsCalculator {
 
     @Override

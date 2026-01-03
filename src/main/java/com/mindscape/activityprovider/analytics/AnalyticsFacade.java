@@ -3,10 +3,12 @@ package com.mindscape.activityprovider.analytics;
 import com.mindscape.activityprovider.dto.AnalyticItem;
 import com.mindscape.activityprovider.dto.AnalyticsResponseItem;
 import com.mindscape.activityprovider.model.StudentAnalytics;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class AnalyticsFacade {
 
     private final List<AnalyticsCalculator> calculators;

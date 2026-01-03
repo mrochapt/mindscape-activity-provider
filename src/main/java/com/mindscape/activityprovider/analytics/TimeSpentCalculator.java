@@ -2,7 +2,9 @@ package com.mindscape.activityprovider.analytics;
 
 import com.mindscape.activityprovider.dto.AnalyticItem;
 import com.mindscape.activityprovider.model.StudentAnalytics;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TimeSpentCalculator implements AnalyticsCalculator {
 
     @Override
@@ -15,7 +17,7 @@ public class TimeSpentCalculator implements AnalyticsCalculator {
                                   String studentId,
                                   StudentAnalytics sa) {
         return new AnalyticItem(
-            "TimeSpentSeconds",
+            "Time spent (seconds)",
             "integer",
             sa.getTimeSpentSeconds()
         );

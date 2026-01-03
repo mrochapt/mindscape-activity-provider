@@ -28,7 +28,6 @@ public class MindscapeController {
         return "MindScape Activity Provider is running.";
     }
 
-    // Endpoint usado pela Inven!RA (exemplo)
     @PostMapping("/analytics")
     public AnalyticsResponseItem getAnalytics(@RequestBody Map<String, Object> payload) {
         String activityId = payload.get("activityID").toString();
@@ -42,15 +41,12 @@ public class MindscapeController {
         return analyticsFacade.toResponse(studentId, items);
     }
 
-    // Endpoint GET adicional para testes rápidos no browser:
-    // /analytics-mindscape?activityID=...
     @GetMapping("analytics-mindscape")
     public List<AnalyticsResponseItem> getAnalyticsGet(@RequestParam("activityID") String activityId) {
         if (activityId == null || activityId.isBlank()) {
             throw new IllegalArgumentException("activityID obrigatório");
         }
 
-        // filtra todos os StudentAnalytics desta atividade
         return store.values().stream()
             .filter(sa -> activityId.equals(sa.getActivityId()))
             .map(sa -> {
