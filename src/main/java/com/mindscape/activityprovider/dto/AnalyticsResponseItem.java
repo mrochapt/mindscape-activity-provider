@@ -4,7 +4,6 @@ import java.util.List;
 
 public class AnalyticsResponseItem {
 
-    // Nome alinhado com a especificação de Activity Providers
     private String inveniraStdID;
     private List<AnalyticItem> quantAnalytics;
     private List<AnalyticItem> qualAnalytics;

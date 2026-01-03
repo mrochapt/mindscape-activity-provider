@@ -21,8 +21,6 @@ public class AnalyticsService {
 
     private final AnalyticsCalculatorFactory factory = new AnalyticsCalculatorFactory();
 
-    // ------- gestão de StudentAnalytics (substitui o Map no controller) -------
-
     public void ensureActivityExists(String activityId) {
         analyticsStore.computeIfAbsent(activityId, k -> new ConcurrentHashMap<>());
     }
@@ -75,7 +73,6 @@ public class AnalyticsService {
             "ideasGenerated",
             "timeSpent",
             "reflectionSubmitted"
-            // se quiseres, podes acrescentar "score" aqui
         );
 
         List<AnalyticItem> result = new ArrayList<>();

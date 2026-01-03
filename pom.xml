@@ -4,7 +4,6 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- 👇 Este parent resolve automaticamente TODAS as versões das dependências Spring -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -53,7 +52,7 @@
 
     <build>
         <plugins>
-            <!-- Plugin do Spring Boot (importante para gerar JAR executável) -->
+            <!-- Plugin do Spring Boot -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

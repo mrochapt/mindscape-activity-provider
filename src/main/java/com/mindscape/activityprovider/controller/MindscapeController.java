@@ -15,7 +15,7 @@ public class MindscapeController {
 
     private final AnalyticsFacade analyticsFacade;
 
-    // armazenamento simples em memória (podes refatorar depois)
+    // armazenamento simples em memória
     private final Map<String, StudentAnalytics> store = new ConcurrentHashMap<>();
 
     public MindscapeController(AnalyticsFacade analyticsFacade) {
