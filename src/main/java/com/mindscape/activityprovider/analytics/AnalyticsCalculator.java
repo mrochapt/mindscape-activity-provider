@@ -5,9 +5,7 @@ import com.mindscape.activityprovider.model.StudentAnalytics;
 
 public interface AnalyticsCalculator {
 
-    String getType(); // ex: "timeSpent", "timeOnTask"
+    String getType(); 
 
-    AnalyticItem calculate(String activityId,
-                           String studentId,
-                           StudentAnalytics studentAnalytics);
+    AnalyticItem calculate(String activityId, String studentId, StudentAnalytics studentAnalytics);
 }

@@ -2,9 +2,9 @@ package com.mindscape.activityprovider.dto;
 
 public class AnalyticItem {
 
-    private String name;   // ex: "TimeSpent"
-    private String type;   // ex: "integer", "text/plain"
-    private Object value;  // ex: 120, "texto..."
+    private String name;   
+    private String type;   
+    private Object value;  
 
     public AnalyticItem() {}
 
